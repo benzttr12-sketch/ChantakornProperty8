@@ -17,11 +17,11 @@ function harness({ role = 'USER', verified = true, exists = true, available = tr
       async signOut() { calls.push(['signOut']); },
       async createUserWithEmailAndPassword() { calls.push(['register']); if (registerError) throw registerError; return { user }; },
       async sendEmailVerification() { calls.push(['verify']); if (verifyError) throw verifyError; },
-      async deleteUser() { assert.fail('Registration must not delete accounts'); },
+      deleteUser() { assert.fail('Registration must not delete accounts'); },
     };
     if (name === 'firebase/firestore') return {
       doc: (...args) => args,
-      async getDoc() { calls.push(['getProfile']); if (error) throw error; return { exists: () => exists, data: () => ({ role, full_name: 'Name' }) }; },
+      getDoc() { calls.push(['getProfile']); if (error) throw error; return { exists: () => exists, data: () => ({ role, full_name: 'Name' }) }; },
       async runTransaction(db, work) {
         if (error) throw error;
         return work({ get: async () => ({ exists: () => exists }), set: (reference, data) => calls.push(['setProfile', data]) });
