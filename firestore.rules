@@ -1,0 +1,94 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function staff() {
+      return signedIn() && request.auth.token.email_verified == true
+        && get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.role in ['ADMIN', 'AGENT'];
+    }
+    function admin() {
+      return staff() && get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.role == 'ADMIN';
+    }
+    function text(data, key, minimum, maximum) {
+      return data[key] is string && data[key].size() >= minimum && data[key].size() <= maximum;
+    }
+    function optionalText(data, key, maximum) {
+      return !(key in data) || text(data, key, 0, maximum);
+    }
+    function validProfile(id) {
+      let d = request.resource.data;
+      return d.keys().hasAll(['id', 'full_name', 'role'])
+        && d.keys().hasOnly(['id', 'full_name', 'phone', 'role'])
+        && d.id == id && text(d, 'full_name', 1, 120)
+        && optionalText(d, 'phone', 30) && d.role in ['USER', 'AGENT', 'ADMIN'];
+    }
+    match /profiles/{id} {
+      allow get: if signedIn() && (request.auth.uid == id || admin());
+      allow list: if admin();
+      allow create: if signedIn() && request.auth.uid == id && validProfile(id) && request.resource.data.role == 'USER';
+      allow update: if validProfile(id) && (
+        (signedIn() && request.auth.uid == id && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['full_name', 'phone']))
+        || (admin() && request.auth.uid != id)
+      );
+      // No client deletion: account removal requires a trusted administrator.
+    }
+    function validProperty(id) {
+      let d = request.resource.data;
+      return d.id == id && text(d, 'title', 3, 300) && text(d, 'slug', 1, 300)
+        && d.published is bool && d.featured is bool
+        && d.price is number && d.price >= 0
+        && d.property_type in ['house', 'land', 'condo', 'commercial', 'investment', 'consignment']
+        && d.status in ['sale', 'rent'] && d.images is list && d.images.size() <= 30
+        && d.features is list && d.features.size() <= 100 && text(d, 'created_at', 1, 40);
+    }
+    match /properties/{id} {
+      allow read: if resource.data.published == true || staff();
+      allow create: if staff() && validProperty(id);
+      allow update: if staff() && validProperty(id) && request.resource.data.created_at == resource.data.created_at;
+      allow delete: if staff();
+    }
+    match /agents/{id} {
+      allow read: if true;
+      allow write: if admin();
+    }
+    function validDetails(d) {
+      return d is map
+        && d.keys().hasOnly(['property_type', 'province', 'district', 'subdistrict', 'expected_price', 'land_size', 'usable_area', 'photos_count', 'photo_paths'])
+        && text(d, 'property_type', 1, 40) && text(d, 'province', 1, 120) && text(d, 'district', 1, 120)
+        && optionalText(d, 'subdistrict', 120) && d.expected_price is number && d.expected_price >= 0
+        && (!('land_size' in d) || (d.land_size is number && d.land_size >= 0))
+        && (!('usable_area' in d) || (d.usable_area is number && d.usable_area >= 0))
+        && (!('photo_paths' in d) || (d.photo_paths is list && d.photo_paths.size() <= 10))
+        && (!('photos_count' in d) || (d.photos_count is int && d.photos_count >= 0 && d.photos_count <= 10));
+    }
+    function validInquiry(id) {
+      let d = request.resource.data;
+      return d.keys().hasAll(['id', 'name', 'phone', 'message', 'inquiry_type', 'status', 'created_at'])
+        && d.keys().hasOnly(['id', 'name', 'phone', 'message', 'inquiry_type', 'status', 'created_at', 'property_id', 'property_title', 'line_id', 'consignment_details'])
+        && d.id == id && text(d, 'name', 1, 120) && text(d, 'phone', 6, 30) && text(d, 'message', 1, 5000)
+        && optionalText(d, 'line_id', 120) && optionalText(d, 'property_id', 128) && optionalText(d, 'property_title', 300)
+        && d.inquiry_type in ['inquiry', 'viewing', 'consignment_sell'] && d.status == 'new'
+        && text(d, 'created_at', 1, 40)
+        && (!('consignment_details' in d) || validDetails(d.consignment_details));
+    }
+    match /inquiries/{id} {
+      // Customers may submit, but cannot read, overwrite or delete customer data.
+      allow create: if validInquiry(id);
+      allow read: if staff();
+      allow update: if staff()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['new', 'contacted', 'scheduled', 'closed'];
+      allow delete: if admin();
+    }
+    match /site_settings/{id} {
+      allow read: if id == '1';
+      allow create, update: if admin() && id == '1'
+        && request.resource.data.keys().hasOnly(['id', 'agency_name', 'phone', 'line_id', 'email', 'address', 'hours'])
+        && request.resource.data.id == 1
+        && text(request.resource.data, 'agency_name', 1, 150) && text(request.resource.data, 'phone', 1, 30)
+        && optionalText(request.resource.data, 'line_id', 500) && optionalText(request.resource.data, 'email', 500)
+        && optionalText(request.resource.data, 'address', 500) && optionalText(request.resource.data, 'hours', 500);
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

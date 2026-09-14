@@ -1,0 +1,23 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function staff() {
+      return request.auth != null && request.auth.token.email_verified == true
+        && firestore.get(/databases/(default)/documents/profiles/$(request.auth.uid)).data.role in ['ADMIN', 'AGENT'];
+    }
+    function image() {
+      return request.resource.size > 0 && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+    }
+    match /property-photos/{name} {
+      allow read: if true;
+      allow create: if resource == null && staff() && image();
+      allow delete: if staff();
+    }
+    match /consignment-photos/{name} {
+      allow create: if resource == null && image();
+      allow read, delete: if staff();
+    }
+    match /{path=**} { allow read, write: if false; }
+  }
+}
