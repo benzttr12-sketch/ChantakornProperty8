@@ -1,10 +1,10 @@
 # CHANTAKORN PROPERTY (ฉันทากร พร็อพเพอร์ตี้)
-> สถานะระบบ: ใช้ Firebase Firestore และ Firebase Authentication เป็นระบบหลัก และใช้ Sites + R2 สำหรับรูปภาพ เพื่อให้ใช้งานได้โดยไม่ต้องเปิด Firebase Blaze อ่าน [คู่มือความปลอดภัยและเปิดใช้ Firebase](FIREBASE-SECURITY.md) ก่อนนำขึ้น production
+> สถานะระบบ: ใช้ Firebase Firestore และ Firebase Authentication เป็นระบบหลัก และใช้ Sites + R2 สำหรับรูปภาพ[...]
 ### Real Estate Agency Platform — Hat Yai & Songkhla, Thailand
 
-> **"บ้าน • ที่ดิน • คอนโด • อสังหาริมทรัพย์ ครบวงจร ใส่ใจทุกบริการ เราดูแลคุณ เหมือนบ้านของเราเอง"**
+> **"บ้าน • ที่ดิน • คอนโด • อสังหาริมทรัพย์ ครบวงจร ใส่ใจทุกบริการ เราดูแล[...]
 
-A production-ready, high-end real estate agency web platform designed and engineered specifically for **CHANTAKORN PROPERTY**, serving the **Hat Yai – Songkhla** metropolitan area in Southern Thailand.
+A production-ready, high-end real estate agency web platform designed and engineered specifically for **CHANTAKORN PROPERTY**, serving the **Hat Yai – Songkhla** metropolitan area in Southern Tha[...]
 
 ---
 
@@ -27,7 +27,7 @@ A production-ready, high-end real estate agency web platform designed and engine
    - Floating search box with ซื้อ / เช่า tabs, property types, Songkhla districts, and price bounds
    - 6 Category Cards (บ้าน, ที่ดิน, คอนโด, อาคารพาณิชย์, ลงทุน, ขายฝาก / จำนอง)
    - 6 Featured Property Cards with 4:3 image ratio, stats (beds, baths, land size, usable area), and instant favorite toggle
-   - Why Choose Us (มืออาชีพ, ข้อมูลชัดเจน, ดูแลทุกขั้นตอน, รู้จักพื้นที่หาดใหญ่–สงขลา)
+   - Why Choose Us (มืออาชีพ, ข้อมูลชัดเจน, ดูแลทุกขั้นตอน, รู้จักพื้นที่หาดใหญ่–ส��[...]
    - Location Highlights (หาดใหญ่, เมืองสงขลา, ควนลัง, คลองแห, บ้านพรุ, ทุ่งลุง)
    - Sell Property Consignment CTA Banner
    - Customer Testimonials (clearly marked with DEMO tags)
@@ -119,7 +119,7 @@ Copy the example file:
 ```bash
 cp .env.example .env.local
 ```
-Set the `NEXT_PUBLIC_FIREBASE_*` values for the Firebase web app. Production builds fail closed when Firebase is configured but unavailable; they do not silently write to localStorage or another backend.
+Set the `NEXT_PUBLIC_FIREBASE_*` values for the Firebase web app. Production builds fail closed when Firebase is configured but unavailable; they do not silently write to localStorage or another [...]
 
 ### 4. Firebase setup
 1. Enable Email/Password in Firebase Authentication and configure the authorized domains.
