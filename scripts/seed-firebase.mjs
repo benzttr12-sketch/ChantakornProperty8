@@ -1,10 +1,11 @@
-﻿// scripts/seed-firebase.mjs
+// scripts/seed-firebase.mjs
 // Run: node scripts/seed-firebase.mjs
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, setDoc, doc, getDoc } from 'firebase/firestore';
 import { initializeAuth, inMemoryPersistence, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
+import process from 'node:process';
 
 // Read .env.local
 const envPath = resolve(process.cwd(), '.env.local');
@@ -51,10 +52,10 @@ const SAMPLE_AGENTS = [
     title: "ผู้ก่อตั้งและที่ปรึกษาอสังหาริมทรัพย์อาวุโส",
     phone: "081-604-0097",
     line_id: "LINE Official Account",
-    facebook: "https://www.facebook.com/people/Chantakorn-Property-%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%AB%E0%B8%99%E0%B9%89%E0%B8%B2-%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%94%E0%B8%B4%E0%B8%99-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%AB%E0%B8%B2%E0%B8%94%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-%E0%B8%AA%E0%B8%87%E0%B8%82%E0%B8%A5%E0%B8%B2/61593092347613/",
+    facebook: "https://www.facebook.com/people/Chantakorn-Property-%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%AB%E0%B8%99%E0%B9%89%E0%B8%B2-%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99-%E0%B8%97%E0%B8%B5%E0%B9%88%[...]
     email: "chantakorn@chantakornproperty.com",
     photo_url: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80",
-    bio: "ประสบการณ์ด้านอสังหาริมทรัพย์ในพื้นที่หาดใหญ่-สงขลากว่า 10 ปี เชี่ยวชาญการประเมินราคา การเจรจาต่อรอง และการประสานงานสินเชื่อธนาคาร ดูแลลูกค้าทุกท่านอย่างซื่อตรงและโปร่งใส"
+    bio: "ประสบการณ์ด้านอสังหาริมทรัพย์ในพื้นที่หาดใหญ่-สงขลากว่า 10 ปี เชี่[...]
   },
   {
     id: "a2222222-2222-2222-2222-222222222222",
@@ -62,10 +63,10 @@ const SAMPLE_AGENTS = [
     title: "ผู้เชี่ยวชาญด้านบ้านเดี่ยวและคอนโดมิเนียม ม.อ.หาดใหญ่",
     phone: "089-876-5432",
     line_id: "LINE Official Account",
-    facebook: "https://www.facebook.com/people/Chantakorn-Property-%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%AB%E0%B8%99%E0%B9%89%E0%B8%B2-%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%94%E0%B8%B4%E0%B8%99-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%AB%E0%B8%B2%E0%B8%94%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-%E0%B8%AA%E0%B8%87%E0%B8%82%E0%B8%A5%E0%B8%B2/61593092347613/",
+    facebook: "https://www.facebook.com/people/Chantakorn-Property-%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%AB%E0%B8%99%E0%B9%89%E0%B8%B2-%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99-%E0%B8%97%E0%B8%B5%E0%B9%88%[...]
     email: "pimonpat@chantakornproperty.com",
     photo_url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80",
-    bio: "ให้คำปรึกษาในการเลือกซื้อบ้านและคอนโดเพื่ออยู่อาศัยและการลงทุน ดูแลตั้งแต่การพานัดชมทรัพย์จนถึงวันโอนกรรมสิทธิ์ ณ กรมที่ดิน"
+    bio: "ให้คำปรึกษาในการเลือกซื้อบ้านและคอนโดเพื่ออยู่อาศัยและการลงทุน[...]
   }
 ];
 
@@ -74,7 +75,7 @@ const SAMPLE_PROPERTIES = [
     id: 'prop-01',
     title: 'บ้านเดี่ยว 2 ชั้น สไตล์โมเดิร์นทรอปิคอล ใกล้เซ็นทรัลหาดใหญ่',
     slug: 'modern-tropical-house-near-central-hatyai',
-    description: 'บ้านเดี่ยว 2 ชั้น ดีไซน์โมเดิร์นทรอปิคอล ออกแบบโปร่งโล่ง รับลมธรรมชาติ เดินทางสะดวกเพียง 7 นาทีถึงห้างเซ็นทรัลหาดใหญ่',
+    description: 'บ้านเดี่ยว 2 ชั้น ดีไซน์โมเดิร์นทรอปิคอล ออกแบบโปร่งโล่ง รับลมธ�[...]
     property_type: 'house',
     status: 'sale',
     price: 4850000,
@@ -91,7 +92,7 @@ const SAMPLE_PROPERTIES = [
     usable_area: 195.0,
     year_built: 2023,
     furniture: 'พร้อมอยู่บางส่วน',
-    features: ['เครื่องปรับอากาศ 3 เครื่อง', 'ห้องครัวบิวท์อิน', 'ระบบกล้องวงจรปิด CCTV', 'สวนหย่อมส่วนตัว'],
+    features: ['เครื่องปรับอากาศ 3 เครื่อง', 'ห้องครัวบิวท์อิน', 'ระบบกล้องวงจรปิด CCT[...]
     cover_image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
     images: [
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
@@ -105,9 +106,9 @@ const SAMPLE_PROPERTIES = [
   },
   {
     id: 'prop-02',
-    title: 'ที่ดินเปล่าทำเลทอง ถมแล้ว รูปแปลงสวย ใกล้สนามบินนานาชาติหาดใหญ่',
+    title: 'ที่ดินเปล่าทำเลทอง ถมแล้ว รูปแปลงสวย ใกล้สนามบินนานาชาติหาดใหญ่[...]
     slug: 'prime-land-near-hatyai-airport',
-    description: 'ที่ดินทำเลศักยภาพสูง เนื้อที่ 200 ตารางวา หน้ากว้างติดถนนสาธารณประโยชน์ 24 เมตร ใกล้สนามบินนานาชาติหาดใหญ่เพียง 8 นาที',
+    description: 'ที่ดินทำเลศักยภาพสูง เนื้อที่ 200 ตารางวา หน้ากว้างติดถนนสาธารณ��[...]
     property_type: 'land',
     status: 'sale',
     price: 2890000,
@@ -124,7 +125,7 @@ const SAMPLE_PROPERTIES = [
     usable_area: 0,
     year_built: 2024,
     furniture: 'ไม่มี',
-    features: ['ติดถนนสาธารณะ', 'ไฟฟ้าเข้าถึง', 'น้ำประปาเข้าถึง', 'ถมแล้วพร้อมสร้าง'],
+    features: ['ติดถนนสาธารณะ', 'ไฟฟ้าเข้าถึง', 'น้ำประปาเข้าถึง', 'ถมแล้วพร้อมสร้า��[...]
     cover_image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
     images: [
       'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80'
@@ -138,7 +139,7 @@ const SAMPLE_PROPERTIES = [
     id: 'prop-03',
     title: 'คอนโดหรูแต่งครบ วิวดอยคอหงส์ ใกล้มหาวิทยาลัยสงขลานครินทร์ (ม.อ.)',
     slug: 'luxury-condo-khohong-view-near-psu',
-    description: 'คอนโดมิเนียมพร้อมอยู่ ชั้น 12 วิวทิวทัศน์เขาคอหงส์ ตกแต่งครบด้วยเฟอร์นิเจอร์สั่งทำพิเศษ',
+    description: 'คอนโดมิเนียมพร้อมอยู่ ชั้น 12 วิวทิวทัศน์เขาคอหงส์ ตกแต่งครบด้ว[...]
     property_type: 'condo',
     status: 'sale',
     price: 2490000,
@@ -171,7 +172,7 @@ async function seed() {
   const email = env.FIREBASE_SEED_EMAIL || process.env.FIREBASE_SEED_EMAIL;
   const password = env.FIREBASE_SEED_PASSWORD || process.env.FIREBASE_SEED_PASSWORD;
   if (!email || !password) {
-    throw new Error('ต้องกำหนด FIREBASE_SEED_EMAIL และ FIREBASE_SEED_PASSWORD ใน environment ก่อนรัน (อย่าใส่รหัสผ่านลงไฟล์)');
+    throw new Error('ต้องกำหนด FIREBASE_SEED_EMAIL และ FIREBASE_SEED_PASSWORD ใน environment ก่อนรัน (อย่าใส่รหัสผ่านลง[...]
   }
 
   console.log(`🔐 กำลังยืนยันบัญชีผู้ดูแล ${email} สำหรับการนำเข้าข้อมูล...`);
