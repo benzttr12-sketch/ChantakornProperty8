@@ -29,10 +29,10 @@ function harness(response, configured = true, firebase = null, moduleSource = co
   const exports = {};
   vm.runInNewContext(moduleSource, {
     exports, console, crypto: { randomUUID },
-    process: { env: { NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co', NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test', ...(firebase ? { NEXT_PUBLIC_FIREBASE_PROJECT_ID: 'test-project', NEXT_PUBLIC_FIREBASE_API_KEY: 'test-key' } : {}) } },
+    process: { env: { NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co', NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test', ...(firebase ? { NEXT_PUBLIC_FIREBASE_PROJECT_ID: 'test-project', NEXT_PUBLIC_[...] } : {}) } },
     localStorage: new Proxy({}, { get() { throw new Error('Unexpected localStorage access'); } }),
     require(name) {
-      if (name === '@/lib/firebase/public-reader') return { async readPublicProperties() { if (firebase?.error) throw firebase.error; return firebase?.rows || []; } };
+      if (name === '@/lib/firebase/public-reader') return { readPublicProperties() { if (firebase?.error) throw firebase.error; return firebase?.rows || []; } };
       if (name === '@/lib/firebase/client') return { db: firebase ? {} : null, isFirebaseConfigured: !!firebase,
         requireFirebaseDatabase() { if (firebase?.unavailable) throw new Error('Firebase unavailable'); return {}; } };
       if (name === 'firebase/firestore') return firestore;
@@ -148,7 +148,7 @@ test('configured Firebase with failed initialization never uses Supabase', async
 });
 
 test('public Firebase reads return empty/missing results and propagate failures without Supabase', async () => {
-  const publicSource = ts.transpileModule(readFileSync(new URL('../src/lib/supabase/public-properties.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+  const publicSource = ts.transpileModule(readFileSync(new URL('../src/lib/supabase/public-properties.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outp[...]
   const { store, calls } = harness({}, true, {}, publicSource);
   assert.equal((await store.fetchPublicProperties()).length, 0);
   assert.equal(await store.fetchPublicPropertyBySlug('missing'), null);
