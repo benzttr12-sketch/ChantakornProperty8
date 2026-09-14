@@ -1,5 +1,6 @@
 import nextEnv from '@next/env';
 import { createClient } from '@supabase/supabase-js';
+import process from 'node:process';
 
 nextEnv.loadEnvConfig(process.cwd());
 
