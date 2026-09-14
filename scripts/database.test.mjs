@@ -29,7 +29,7 @@ function harness(response, configured = true, firebase = null, moduleSource = co
   const exports = {};
   vm.runInNewContext(moduleSource, {
     exports, console, crypto: { randomUUID },
-    process: { env: { NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co', NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test', ...(firebase ? { NEXT_PUBLIC_FIREBASE_PROJECT_ID: 'test-project', NEXT_PUBLIC_[...] } : {}) } },
+    process: { env: { NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co', NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test', ...(firebase ? { NEXT_PUBLIC_FIREBASE_PROJECT_ID: 'test-project', NEXT_PUBLIC_FIREBASE_API_KEY: 'test', NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: 'test.firebaseapp.com', NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: 'test.appspot.com', NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '123', NEXT_PUBLIC_FIREBASE_APP_ID: 'test' } : {}) } },
     localStorage: new Proxy({}, { get() { throw new Error('Unexpected localStorage access'); } }),
     require(name) {
       if (name === '@/lib/firebase/public-reader') return { readPublicProperties() { if (firebase?.error) throw firebase.error; return firebase?.rows || []; } };
@@ -148,7 +148,7 @@ test('configured Firebase with failed initialization never uses Supabase', async
 });
 
 test('public Firebase reads return empty/missing results and propagate failures without Supabase', async () => {
-  const publicSource = ts.transpileModule(readFileSync(new URL('../src/lib/supabase/public-properties.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outp[...]
+  const publicSource = ts.transpileModule(readFileSync(new URL('../src/lib/supabase/public-properties.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
   const { store, calls } = harness({}, true, {}, publicSource);
   assert.equal((await store.fetchPublicProperties()).length, 0);
   assert.equal(await store.fetchPublicPropertyBySlug('missing'), null);
